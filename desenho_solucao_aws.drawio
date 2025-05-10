@@ -13,17 +13,17 @@
         <mxCell id="aws-region-group" value="Região: São Paulo (sa-east-1)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#00A4A6;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=1;" parent="aws-account-group" vertex="1">
           <mxGeometry x="20" y="40" width="2120" height="1900" as="geometry" />
         </mxCell>
-        <mxCell id="internet-user" value="[Ícone de Utilizador da Internet]" style="shape=mxgraph.aws4.user;html=1;dashed=0;fillColor=#232F3E;strokeColor=#ffffff;fontColor=#232F3E;verticalAlign=bottom;" parent="aws-region-group" vertex="1">
-          <mxGeometry x="1030" y="40" width="68" height="78" as="geometry" />
+        <mxCell id="internet-user" value="" style="shape=mxgraph.aws4.user;html=1;dashed=0;fillColor=#232F3E;strokeColor=#ffffff;fontColor=#232F3E;verticalAlign=bottom;" parent="aws-region-group" vertex="1">
+          <mxGeometry x="1027" y="35" width="68" height="78" as="geometry" />
         </mxCell>
         <mxCell id="internet-user-label" value="Utilizador da Internet" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="aws-region-group" vertex="1">
           <mxGeometry x="1000" y="130" width="130" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="route53" value="[Ícone do Route 53]" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.route_53;" parent="aws-region-group" vertex="1">
-          <mxGeometry x="1030" y="170" width="68" height="68" as="geometry" />
+        <mxCell id="8AH3X3YRK22Bzu3aVASR-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="aws-region-group" source="route53" target="cloudfront">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="route53-label" value="Amazon Route 53" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="aws-region-group" vertex="1">
-          <mxGeometry x="995" y="245" width="140" height="26" as="geometry" />
+        <mxCell id="route53" value="[Ícone do Route 53]" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.route_53;" parent="aws-region-group" vertex="1">
+          <mxGeometry x="1030" y="170" width="68" height="68" as="geometry" />
         </mxCell>
         <mxCell id="cloudfront" value="[Ícone do CloudFront]" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#FF4F8B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.cloudfront_download_distribution;" parent="aws-region-group" vertex="1">
           <mxGeometry x="1030" y="285" width="68" height="68" as="geometry" />
