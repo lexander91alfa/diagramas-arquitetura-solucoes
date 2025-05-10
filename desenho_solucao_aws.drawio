@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.3">
   <diagram id="lhIPcpT-WUZlk-XbNvLf" name="Página-1">
-    <mxGraphModel dx="1042" dy="562" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1281" dy="562" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="aws-region" value="Região AWS" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;html=1;strokeColor=#232F3E;fillColor=#FFFFFF;" parent="1" vertex="1">
-          <mxGeometry x="40" y="40" width="1000" height="700" as="geometry">
+          <mxGeometry x="40" y="40" width="1000" height="880" as="geometry">
             <mxRectangle x="40" y="40" width="180" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
@@ -40,10 +40,10 @@
           <mxGeometry x="430" y="400" width="100" height="70" as="geometry" />
         </mxCell>
         <mxCell id="iam-role" value="IAM Role&lt;br&gt;(Permissões ECS &lt;br&gt;para DynamoDB)" style="shape=card;size=15;strokeColor=#232F3E;fillColor=#FFFFFF;fontColor=#000000;" parent="aws-region" vertex="1">
-          <mxGeometry x="70" y="500" width="120" height="80" as="geometry" />
+          <mxGeometry y="700" width="1000" height="80" as="geometry" />
         </mxCell>
         <mxCell id="cloudwatch" value="CloudWatch&lt;br&gt;(Logs, Métricas)" style="shape=cloud;strokeColor=#232F3E;fillColor=#FFFFFF;fontColor=#000000;" parent="aws-region" vertex="1">
-          <mxGeometry x="750" y="500" width="160" height="100" as="geometry" />
+          <mxGeometry y="780" width="1000" height="100" as="geometry" />
         </mxCell>
         <mxCell id="arrow-ecs1-vpce" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ecs-task-1" target="vpc-endpoint" edge="1">
           <mxGeometry relative="1" as="geometry">
