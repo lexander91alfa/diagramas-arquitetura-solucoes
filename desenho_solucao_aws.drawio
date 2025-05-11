@@ -1,195 +1,163 @@
-<mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" background="#ffffff">
-  <root>
-    <mxCell id="0"/>
-    <mxCell id="1" parent="0"/>
-
-    <mxCell id="title" value="Arquitetura de Ingestão de Dados com AWS Glue para Data Mesh (Well-Architected)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
-      <mxGeometry x="600" y="20" width="800" height="40" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="onprem_zone" value="Ambiente On-Premises" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;html=1;strokeWidth=2;fillColor=#DAE8FC;swimlaneFillColor=#DAE8FC;" vertex="1" parent="1">
-      <mxGeometry x="50" y="300" width="300" height="250" as="geometry"/>
-    </mxCell>
-    <mxCell id="onprem_db" value="Banco de Dados Relacional On-Premises&lt;br&gt;(e.g., Oracle, SQL Server, PostgreSQL)&lt;br&gt;&lt;br&gt;&lt;b&gt;Volume Inicial:&lt;/b&gt; 10 TB&lt;br&gt;&lt;b&gt;Novos Registros:&lt;/b&gt; ~5 Milhões/dia" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="onprem_zone">
-      <mxGeometry x="50" y="60" width="200" height="150" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="connectivity_arrow" value="AWS Direct Connect / VPN&lt;br&gt;(Conexão Segura e Dedicada)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;strokeWidth=2;endArrow=classic;endFill=1;" edge="1" parent="1" source="onprem_db" target="aws_vpc">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="360" y="375" as="sourcePoint"/>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="aws_cloud_boundary" value="AWS Cloud" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=30;collapsible=1;html=1;strokeWidth=2;fillColor=#FFF2CC;swimlaneFillColor=#FFF2CC;" vertex="1" parent="1">
-      <mxGeometry x="450" y="100" width="1100" height="950" as="geometry">
-        <mxRectangle x="450" y="100" width="120" height="30" as="alternateBounds"/>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="aws_vpc" value="Amazon VPC (Virtual Private Cloud)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;dashed=1;strokeWidth=2;" vertex="1" parent="aws_cloud_boundary">
-      <mxGeometry x="40" y="60" width="1020" height="850" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="glue_service_label" value="AWS Glue" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="200" y="30" width="150" height="30" as="geometry"/>
-    </mxCell>
-    <mxCell id="glue_icon" value="" style="image;html=1;image=https://d1.awsstatic.com/product-marketing/Analytics/AWS-Glue-icon.73c5ab27a86c4abfeb36e6c4587d1f7215fd2096.png;aspect=fixed;" vertex="1" parent="aws_vpc">
-        <mxGeometry x="50" y="70" width="80" height="80" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="glue_job_initial" value="&lt;b&gt;AWS Glue ETL Job (Carga Inicial)&lt;/b&gt;&lt;br&gt;- Lê 10TB do On-Premises (JDBC)&lt;br&gt;- Transforma, particiona (Parquet)&lt;br&gt;- Grava no S3 Data Mesh SOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="180" y="70" width="280" height="100" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="glue_job_incremental" value="&lt;b&gt;AWS Glue ETL Job (Carga Incremental - Near Real-Time)&lt;/b&gt;&lt;br&gt;- Micro-batches (e.g., a cada 5-15 min)&lt;br&gt;- Lê novos registros do On-Premises (JDBC via High-Watermark)&lt;br&gt;- Transforma e mescla no S3 Data Mesh SOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="180" y="200" width="280" height="120" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="glue_data_catalog" value="AWS Glue Data Catalog&lt;br&gt;(Metadados Técnicos, Esquemas)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="50" y="350" width="180" height="80" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="s3_sor_label" value="Amazon S3 - Data Mesh System of Record (SOR)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="550" y="30" width="400" height="30" as="geometry"/>
-    </mxCell>
-    <mxCell id="s3_bucket_sor" value="S3 Bucket (Data Mesh SOR)&lt;br&gt;- Dados em formato Parquet&lt;br&gt;- Particionado por data/domínio&lt;br&gt;- Organizado em Domínios de Dados" style="shape=cylinder;direction=south;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#FFB366;strokeColor=#D79B00;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="650" y="150" width="220" height="150" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="lake_formation_icon" value="" style="image;html=1;image=https://d1.awsstatic.com/product-marketing/Analytics/AWS-Lake-Formation-icon.6c977b1095e60965f99800d408a37cb2f0a36d71.png;aspect=fixed;" vertex="1" parent="aws_vpc">
-        <mxGeometry x="600" y="350" width="60" height="60" as="geometry"/>
-    </mxCell>
-    <mxCell id="lake_formation" value="AWS Lake Formation&lt;br&gt;(Governança de Dados, Controle de Acesso Fino)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="680" y="350" width="220" height="80" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="secrets_manager_icon" value="" style="image;html=1;image=https://d1.awsstatic.com/product-marketing/Security/AWS-Secrets-Manager-icon.0c2369c16a12a77c5b66267021f3e10fca80cb97.png;aspect=fixed;" vertex="1" parent="aws_vpc">
-        <mxGeometry x="50" y="460" width="60" height="60" as="geometry"/>
-    </mxCell>
-    <mxCell id="secrets_manager" value="AWS Secrets Manager&lt;br&gt;(Gerenciamento Seguro de Credenciais do BD)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="130" y="460" width="220" height="70" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="cloudwatch_icon" value="" style="image;html=1;image=https://d1.awsstatic.com/product-marketing/Management%20and%20Governance/Amazon-CloudWatch-icon.cd703918d3650f031287391ccf82ab221f368b51.png;aspect=fixed;" vertex="1" parent="aws_vpc">
-        <mxGeometry x="600" y="460" width="60" height="60" as="geometry"/>
-    </mxCell>
-    <mxCell id="cloudwatch" value="Amazon CloudWatch&lt;br&gt;(Logs, Métricas, Alarmes para Glue Jobs e Recursos)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="680" y="460" width="220" height="80" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="edge_onprem_glue_initial" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;dashPattern=8 8;" edge="1" parent="aws_vpc" source="onprem_db_placeholder" target="glue_job_initial">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="-250" y="120" as="sourcePoint"/> </mxGeometry>
-    </mxCell>
-    <mxCell id="onprem_db_placeholder" value="Ref: On-Prem DB" style="text;opacity=0;" vertex="1" parent="1"> <mxGeometry x="150" y="375" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="edge_onprem_glue_incremental" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;dashPattern=8 8;" edge="1" parent="aws_vpc" source="onprem_db_placeholder" target="glue_job_incremental">
-      <mxGeometry relative="1" as="geometry">
-        <mxPoint x="-250" y="260" as="sourcePoint"/> <Array as="points">
-            <mxPoint x="-150" y="260"/>
-          </Array>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="edge_glue_initial_s3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;" edge="1" parent="aws_vpc" source="glue_job_initial" target="s3_bucket_sor">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-    <mxCell id="edge_glue_incremental_s3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;" edge="1" parent="aws_vpc" source="glue_job_incremental" target="s3_bucket_sor">
-      <mxGeometry relative="1" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="edge_glue_jobs_catalog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="aws_vpc" source="glue_job_initial" target="glue_data_catalog">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="320" y="300"/>
-          <mxPoint x="140" y="300"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-     <mxCell id="edge_glue_inc_jobs_catalog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="aws_vpc" source="glue_job_incremental" target="glue_data_catalog">
-      <mxGeometry relative="1" as="geometry">
-         <Array as="points">
-          <mxPoint x="320" y="330"/>
-          <mxPoint x="140" y="330"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="edge_s3_lakeformation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="aws_vpc" source="s3_bucket_sor" target="lake_formation">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="760" y="330"/>
-          <mxPoint x="790" y="330"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-    <mxCell id="edge_catalog_lakeformation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="aws_vpc" source="glue_data_catalog" target="lake_formation">
-      <mxGeometry relative="1" as="geometry">
-         <Array as="points">
-          <mxPoint x="300" y="390"/>
-          <mxPoint x="300" y="390"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="edge_glue_secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="aws_vpc" source="glue_job_initial" target="secrets_manager">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="240" y="400"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-     <mxCell id="edge_glue_inc_secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="aws_vpc" source="glue_job_incremental" target="secrets_manager">
-      <mxGeometry relative="1" as="geometry">
-         <Array as="points">
-          <mxPoint x="240" y="420"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="edge_glue_cloudwatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="aws_vpc" source="glue_job_initial" target="cloudwatch">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="500" y="120"/>
-          <mxPoint x="500" y="500"/>
-          <mxPoint x="680" y="500"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-     <mxCell id="edge_glue_inc_cloudwatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="aws_vpc" source="glue_job_incremental" target="cloudwatch">
-      <mxGeometry relative="1" as="geometry">
-        <Array as="points">
-          <mxPoint x="500" y="260"/>
-          <mxPoint x="500" y="520"/>
-          <mxPoint x="680" y="520"/>
-        </Array>
-      </mxGeometry>
-    </mxCell>
-
-    <mxCell id="waf_title" value="Princípios do AWS Well-Architected Framework Aplicados:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="50" y="580" width="450" height="30" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="waf_security" value="&lt;b&gt;Segurança:&lt;/b&gt;&lt;br&gt;- Conexão Segura (VPN/Direct Connect)&lt;br&gt;- IAM Roles com Mínimo Privilégio&lt;br&gt;- AWS Secrets Manager para credenciais&lt;br&gt;- Criptografia em Trânsito (TLS) e Repouso (SSE-S3, KMS)&lt;br&gt;- Security Groups e NACLs na VPC&lt;br&gt;- AWS Lake Formation para acesso granular" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="50" y="620" width="300" height="150" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="waf_reliability" value="&lt;b&gt;Confiabilidade:&lt;/b&gt;&lt;br&gt;- Jobs Glue com retentativas configuráveis&lt;br&gt;- AWS Glue Bookmarks para processamento incremental robusto&lt;br&gt;- Alta durabilidade do Amazon S3 (99.999999999%)&lt;br&gt;- Versionamento de objetos S3 (opcional)&lt;br&gt;- Monitoramento e alertas (CloudWatch)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="370" y="620" width="300" height="130" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="waf_performance" value="&lt;b&gt;Eficiência de Performance:&lt;/b&gt;&lt;br&gt;- Escolha de Workers Glue adequados (DPUs)&lt;br&gt;- Particionamento de dados no S3 para otimizar queries&lt;br&gt;- Formato de arquivo colunar (Parquet) para analytics&lt;br&gt;- Otimização de transformações no Glue (Spark)&lt;br&gt;- Leitura incremental (High-Watermark) para evitar full scans" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="690" y="620" width="300" height="130" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="waf_cost" value="&lt;b&gt;Otimização de Custos:&lt;/b&gt;&lt;br&gt;- AWS Glue: Pagamento por uso (sem servidores para gerenciar)&lt;br&gt;- Amazon S3: Storage de baixo custo e Tiers (Lifecycle policies)&lt;br&gt;- Right-sizing de workers Glue&lt;br&gt;- Agendamento otimizado de jobs incrementais" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="50" y="780" width="300" height="100" as="geometry"/>
-    </mxCell>
-
-    <mxCell id="waf_operational" value="&lt;b&gt;Excelência Operacional:&lt;/b&gt;&lt;br&gt;- Monitoramento centralizado com CloudWatch (Logs, Métricas)&lt;br&gt;- Alarmes para falhas ou anomalias&lt;br&gt;- AWS Glue Data Catalog para descoberta e gerenciamento de metadados&lt;br&gt;- Infraestrutura como Código (IaC) para deploy (e.g. CloudFormation/Terraform - não no diagrama)&lt;br&gt;- Versionamento de scripts Glue" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="aws_vpc">
-      <mxGeometry x="370" y="760" width="300" height="130" as="geometry"/>
-    </mxCell>
-
-  </root>
-</mxGraphModel>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.3">
+  <diagram id="gf71sspzPw5-SMcxkTiX" name="Página-1">
+    <mxGraphModel dx="1830" dy="803" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="2000" pageHeight="1500" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Arquitetura de Ingestão de Dados com AWS Glue para Data Mesh (Well-Architected)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="onprem_zone" value="Ambiente On-Premises" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;html=1;strokeWidth=2;fillColor=#DAE8FC;swimlaneFillColor=#DAE8FC;" parent="1" vertex="1">
+          <mxGeometry x="50" y="300" width="300" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="onprem_db" value="Banco de Dados Relacional On-Premises&lt;br&gt;(e.g., Oracle, SQL Server, PostgreSQL)&lt;br&gt;&lt;br&gt;&lt;b&gt;Volume Inicial:&lt;/b&gt; 10 TB&lt;br&gt;&lt;b&gt;Novos Registros:&lt;/b&gt; ~5 Milhões/dia" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F8CECC;strokeColor=#B85450;" parent="onprem_zone" vertex="1">
+          <mxGeometry x="50" y="60" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="connectivity_arrow" value="AWS Direct Connect / VPN&lt;br&gt;(Conexão Segura e Dedicada)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;strokeWidth=2;endArrow=classic;endFill=1;" parent="1" source="onprem_db" target="aws_vpc" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="375" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="aws_cloud_boundary" value="AWS Cloud" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=30;collapsible=1;html=1;strokeWidth=2;fillColor=#FFF2CC;swimlaneFillColor=#FFF2CC;" parent="1" vertex="1">
+          <mxGeometry x="450" y="100" width="1100" height="950" as="geometry">
+            <mxRectangle x="450" y="100" width="120" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="aws_vpc" value="Amazon VPC (Virtual Private Cloud)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;dashed=1;strokeWidth=2;" parent="aws_cloud_boundary" vertex="1">
+          <mxGeometry x="40" y="60" width="1020" height="850" as="geometry" />
+        </mxCell>
+        <mxCell id="glue_service_label" value="AWS Glue" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="200" y="30" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="glue_job_initial" value="&lt;b&gt;AWS Glue ETL Job (Carga Inicial)&lt;/b&gt;&lt;br&gt;- Lê 10TB do On-Premises (JDBC)&lt;br&gt;- Transforma, particiona (Parquet)&lt;br&gt;- Grava no S3 Data Mesh SOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="180" y="70" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="glue_job_incremental" value="&lt;b&gt;AWS Glue ETL Job (Carga Incremental - Near Real-Time)&lt;/b&gt;&lt;br&gt;- Micro-batches (e.g., a cada 5-15 min)&lt;br&gt;- Lê novos registros do On-Premises (JDBC via High-Watermark)&lt;br&gt;- Transforma e mescla no S3 Data Mesh SOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="180" y="200" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="glue_data_catalog" value="AWS Glue Data Catalog&lt;br&gt;(Metadados Técnicos, Esquemas)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="50" y="350" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_sor_label" value="Amazon S3 - Data Mesh System of Record (SOR)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="550" y="30" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_bucket_sor" value="S3 Bucket (Data Mesh SOR)&lt;br&gt;- Dados em formato Parquet&lt;br&gt;- Particionado por data/domínio&lt;br&gt;- Organizado em Domínios de Dados" style="shape=cylinder;direction=south;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#FFB366;strokeColor=#D79B00;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="650" y="150" width="220" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lake_formation" value="AWS Lake Formation&lt;br&gt;(Governança de Dados, Controle de Acesso Fino)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="680" y="350" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="secrets_manager" value="AWS Secrets Manager&lt;br&gt;(Gerenciamento Seguro de Credenciais do BD)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="130" y="460" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch" value="Amazon CloudWatch&lt;br&gt;(Logs, Métricas, Alarmes para Glue Jobs e Recursos)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="680" y="460" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_onprem_glue_initial" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;dashPattern=8 8;" parent="aws_vpc" source="onprem_db_placeholder" target="glue_job_initial" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-250" y="120" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_onprem_glue_incremental" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;dashPattern=8 8;" parent="aws_vpc" source="onprem_db_placeholder" target="glue_job_incremental" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-250" y="260" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="-150" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_initial_s3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;" parent="aws_vpc" source="glue_job_initial" target="s3_bucket_sor" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_glue_incremental_s3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;" parent="aws_vpc" source="glue_job_incremental" target="s3_bucket_sor" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_glue_jobs_catalog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" parent="aws_vpc" source="glue_job_initial" target="glue_data_catalog" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="300" />
+              <mxPoint x="140" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_inc_jobs_catalog" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="aws_vpc" source="glue_job_incremental" target="glue_data_catalog" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="330" />
+              <mxPoint x="140" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_s3_lakeformation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" parent="aws_vpc" source="s3_bucket_sor" target="lake_formation" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="330" />
+              <mxPoint x="790" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_catalog_lakeformation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" parent="aws_vpc" source="glue_data_catalog" target="lake_formation" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="390" />
+              <mxPoint x="300" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="aws_vpc" source="glue_job_initial" target="secrets_manager" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_inc_secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="aws_vpc" source="glue_job_incremental" target="secrets_manager" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_cloudwatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" parent="aws_vpc" source="glue_job_initial" target="cloudwatch" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="120" />
+              <mxPoint x="500" y="500" />
+              <mxPoint x="680" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_glue_inc_cloudwatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;" parent="aws_vpc" source="glue_job_incremental" target="cloudwatch" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="260" />
+              <mxPoint x="500" y="520" />
+              <mxPoint x="680" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="waf_title" value="Princípios do AWS Well-Architected Framework Aplicados:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="50" y="580" width="450" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="waf_security" value="&lt;b&gt;Segurança:&lt;/b&gt;&lt;br&gt;- Conexão Segura (VPN/Direct Connect)&lt;br&gt;- IAM Roles com Mínimo Privilégio&lt;br&gt;- AWS Secrets Manager para credenciais&lt;br&gt;- Criptografia em Trânsito (TLS) e Repouso (SSE-S3, KMS)&lt;br&gt;- Security Groups e NACLs na VPC&lt;br&gt;- AWS Lake Formation para acesso granular" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="50" y="620" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="waf_reliability" value="&lt;b&gt;Confiabilidade:&lt;/b&gt;&lt;br&gt;- Jobs Glue com retentativas configuráveis&lt;br&gt;- AWS Glue Bookmarks para processamento incremental robusto&lt;br&gt;- Alta durabilidade do Amazon S3 (99.999999999%)&lt;br&gt;- Versionamento de objetos S3 (opcional)&lt;br&gt;- Monitoramento e alertas (CloudWatch)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="370" y="620" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="waf_performance" value="&lt;b&gt;Eficiência de Performance:&lt;/b&gt;&lt;br&gt;- Escolha de Workers Glue adequados (DPUs)&lt;br&gt;- Particionamento de dados no S3 para otimizar queries&lt;br&gt;- Formato de arquivo colunar (Parquet) para analytics&lt;br&gt;- Otimização de transformações no Glue (Spark)&lt;br&gt;- Leitura incremental (High-Watermark) para evitar full scans" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="690" y="620" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="waf_cost" value="&lt;b&gt;Otimização de Custos:&lt;/b&gt;&lt;br&gt;- AWS Glue: Pagamento por uso (sem servidores para gerenciar)&lt;br&gt;- Amazon S3: Storage de baixo custo e Tiers (Lifecycle policies)&lt;br&gt;- Right-sizing de workers Glue&lt;br&gt;- Agendamento otimizado de jobs incrementais" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="50" y="780" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="waf_operational" value="&lt;b&gt;Excelência Operacional:&lt;/b&gt;&lt;br&gt;- Monitoramento centralizado com CloudWatch (Logs, Métricas)&lt;br&gt;- Alarmes para falhas ou anomalias&lt;br&gt;- AWS Glue Data Catalog para descoberta e gerenciamento de metadados&lt;br&gt;- Infraestrutura como Código (IaC) para deploy (e.g. CloudFormation/Terraform - não no diagrama)&lt;br&gt;- Versionamento de scripts Glue" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="aws_vpc" vertex="1">
+          <mxGeometry x="370" y="760" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="onprem_db_placeholder" value="Ref: On-Prem DB" style="text;opacity=0;" parent="1" vertex="1">
+          <mxGeometry x="150" y="375" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
